@@ -9,8 +9,9 @@ import Foundation
 
 extension Models.MainList {
     
-    struct Task {
-        
+    struct Task : Identifiable {
+       
+        var id : String = UUID().uuidString
         var title : String
         var description : String
         var status : Models.MainList.Task.TaskStatusEnum
@@ -26,7 +27,6 @@ extension Models.MainList {
         static let sample3 = Models.MainList.Task(title: "Task 3", description: "This is a short description for task 3", status: .complete)
         static let sample4 = Models.MainList.Task(title: "Task 4", description: "This is a short description for task 4", status: .complete)
         static let sample5 = Models.MainList.Task(title: "Task 5", description: "This is a short description for task 5", status: .toDo)
-        
         
     }
     

@@ -9,7 +9,7 @@ import SwiftUI
 
 extension Models.MainList.Task {
     
-    enum TaskStatusEnum {
+    enum TaskStatusEnum : CaseIterable {
         
         case complete
         case inProgress
@@ -23,6 +23,17 @@ extension Models.MainList.Task {
                 return "📝"
             case .toDo :
                 return "🔖"
+            }
+        }
+        
+        var statusTitle : String {
+            switch self {
+            case .complete :
+                return "Complete"
+            case .inProgress :
+                return "In Progress"
+            case .toDo :
+                return "To Do"
             }
         }
         

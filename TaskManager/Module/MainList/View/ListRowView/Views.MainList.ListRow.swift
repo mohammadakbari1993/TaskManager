@@ -14,11 +14,17 @@ extension Views.MainList {
                 Text(userTask.status.statusEmoji)
                 Text(userTask.title)
                 Spacer()
-                Button {
-                    print("Menu was tapped...")
+                
+                Menu {
+                    ForEach(Models.MainList.Task.TaskStatusEnum.allCases, id : \.self) { item in
+                        Button(item.statusEmoji  + " " + item.statusTitle) {
+                            self.userTask.status = item
+                        }
+                    }
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
+
 
             }
         }
@@ -26,6 +32,9 @@ extension Views.MainList {
 }
 struct MainList_ListRow_Previews: PreviewProvider {
     static var previews: some View {
-        Views.MainList.ListRow(userTask: .constant(.sample3))
+        VStack {
+            Views.MainList.ListRow(userTask: .constant(.sample3))
+        }
+        .previewLayout(.sizeThatFits)
     }
 }
