@@ -10,39 +10,41 @@ import SwiftUI
 extension Views {
     struct MainList : View {
       
-        @State var list : [Models.MainList.Task] = [.sample,
-                                                    .sample2,
-                                                    .sample3,
-                                                    .sample4,
-                                                    .sample5]
+        @StateObject var viewModel : ViewModels.MainList = ViewModels.MainList()
+        
         var body: some View {
             List {
-                ForEach($list) { item in
-                    Views.MainList.ListRow(userTask: item)
+                ForEach(viewModel.filterModeIsActive ? viewModel.filteredItems ?? [] : viewModel.items ?? []) { item in
+                    Views.MainList.ListRow(userTask: item).environmentObject(viewModel)
                 }
+                .onDelete(perform: viewModel.deleteItem)
+                .onMove(perform: viewModel.moveItem)
             }
             .listStyle(PlainListStyle())
-            .navigationTitle("Task Manager")
+            .navigationTitle(Localization.MainList.pageTitle.rawValue)
             .navigationBarItems(leading: Button(action: {
                 //TODO: Handle Your action
             }, label: {
-                Menu {
-                    Button("All") {
-                        //TODO: Handle The action of the button
-                    }
-                    ForEach(Models.MainList.Task.TaskStatusEnum.allCases, id : \.self) { item in
-                        Button(item.statusTitle) {
-                            print(item.statusTitle)
+                HStack {
+                    Menu {
+                        Button(Localization.MainList.TaskStatus.all.rawValue) {
+                            viewModel.filterModeIsActive = false
                         }
+                        ForEach(Models.MainList.Task.TaskStatusEnum.allCases, id : \.self) { item in
+                            Button(item.statusTitle) {
+                                viewModel.filterItem = item
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "line.3.horizontal.decrease.circle")
                     }
-                } label: {
-                    Image(systemName: "line.3.horizontal.decrease.circle")
+                    EditButton()
                 }
-            }), trailing: NavigationLink(destination: Views.AddNewTask()) {
+            }), trailing: NavigationLink(destination: Views.AddNewTask().environmentObject(self.viewModel)) {
                 Image(systemName: "plus.circle")
             })
         }
-        
+                
     }
 }
 

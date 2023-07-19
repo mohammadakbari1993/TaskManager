@@ -18,3 +18,7 @@ struct Models {
 struct ViewModels {
     
 }
+
+struct Localization {
+    
+}

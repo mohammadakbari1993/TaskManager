@@ -9,32 +9,43 @@ import SwiftUI
 
 extension Views {
     struct AddNewTask : View {
+        @Environment(\.presentationMode) var presentationMode
+        @EnvironmentObject var listViewModel : ViewModels.MainList
+        
         @State var titleInputText : String = ""
+        @State var descriptionInputText : String = ""
+        
         var body: some View {
             VStack {
-                
                 ScrollView {
                     
-                    Common.Views.InputBox.SimpleInput(title: "Title *",
-                                                      placeHolder: "Please insert the title of the task",
+                    Common.Views.InputBox.SimpleInput(title: Localization.AddNewTask.Inputs.Title.title.rawValue,
+                                                      placeHolder: Localization.AddNewTask.Inputs.Title.placeHolder.rawValue,
                                                       inputText: $titleInputText).padding(.bottom)
                     
-                    Common.Views.InputBox.SimpleInput(title: "Description *",
-                                                      placeHolder: "Please insert the description of the task",
-                                                      inputText: $titleInputText)
+                    Common.Views.InputBox.SimpleInput(title: Localization.AddNewTask.Inputs.Description.title.rawValue,
+                                                      placeHolder: Localization.AddNewTask.Inputs.Description.placeHolder.rawValue,
+                                                      inputText: $descriptionInputText)
                     
                 }
                 .padding(16)
                 
                 Spacer()
                 
-                Common.Views.Button.SimpleButton(title: "Save".uppercased()) {
-                    print("The button was tapped.")
-                }
+                Common.Views.Button.SimpleButton(title: Localization.AddNewTask.Button.save.rawValue.uppercased(),action: addNewItem)
                 .padding(.horizontal)
             }
-            .navigationTitle("Add a new task")
+            .navigationTitle(Localization.AddNewTask.pageTitle.rawValue)
+            .alert(isPresented: self.$listViewModel.showAlert, content: self.listViewModel.getAlert)
+
         }
+        
+        private func addNewItem() {
+            if self.listViewModel.addItem(title: self.titleInputText, description: self.descriptionInputText) {
+                presentationMode.wrappedValue.dismiss()
+            }
+        }
+        
     }
 }
 
@@ -43,6 +54,7 @@ struct AddNewTask_Previews : PreviewProvider {
         NavigationView {
             Views.AddNewTask(titleInputText: "")
         }
+        .environmentObject(ViewModels.MainList())
     }
 }
 
